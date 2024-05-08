@@ -25,3 +25,7 @@ This is a sandbox AWS S3 Data Lake provisioning terraform repository. The script
   ```sh
   terraform apply
   ```
+
+## Resources
+
+- [architecture-options](https://dev.to/aws-builders/architecture-options-for-building-a-basic-data-lake-on-aws-part-1-18hc)
