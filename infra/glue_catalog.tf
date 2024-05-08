@@ -1,5 +1,5 @@
 locals {
-  database_name   = "my_database_name"
+  database_name   = "database"
   connection_name = "athena_Connection"
 }
 
@@ -79,19 +79,4 @@ resource "aws_iam_policy" "glue_crawler_policy" {
 resource "aws_iam_role_policy_attachment" "glue_crawler_policy_attachment" {
   role       = aws_iam_role.glue_crawler_role.name
   policy_arn = aws_iam_policy.glue_crawler_policy.arn
-}
-
-resource "aws_glue_connection" "athena_connection" {
-  for_each = toset(var.bucket_list)
-  name     = local.connection_name
-
-  connection_type = "NETWORK"
-
-  physical_connection_requirements {
-    availability_zone = var.region
-  }
-
-  tags = {
-    Name = "athena-catalog-connection"
-  }
 }
