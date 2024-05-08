@@ -1,6 +1,6 @@
 locals {
-  bucket_name         = "terraform-lake-state"
-  dynamodb_table_name = "terraform-lake-state"
+  bucket_name         = "terraform-lake-state-${data.aws_caller_identity.current.account_id}"
+  dynamodb_table_name = "terraform-lake-state-${data.aws_caller_identity.current.account_id}"
 }
 
 resource "aws_kms_key" "terraform-bucket-key" {

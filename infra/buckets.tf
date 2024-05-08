@@ -23,6 +23,6 @@ resource "aws_s3_object" "hello" {
 
   bucket = each.value.id
 
-  key     = "hello.json"
+  key     = "hello/hello.json"
   content = jsonencode({ name = "S3" })
 }

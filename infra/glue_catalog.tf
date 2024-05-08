@@ -19,7 +19,7 @@ resource "aws_glue_crawler" "crawler" {
   database_name = aws_glue_catalog_database.catalog[each.key].name
 
   s3_target {
-    path = "s3://${each.value.bucket}/"
+    path = each.value.bucket
   }
 
   tags = {
