@@ -3,14 +3,13 @@ variable "region" {
   default     = "us-east-1"
 }
 
-variable "common_tags" {
-  description = "Common tags you want applied to all resources"
-  default = {
-    Project = "data-lake-sdx"
-  }
-}
-
 variable "bucket_list" {
   type    = list(string)
   default = ["sor", "sot", "spec"]
+}
+
+variable "lambda_policy_arn" {
+  description = "ARN of the IAM role policy to attach to the lambda role."
+  type        = string
+  default     = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
