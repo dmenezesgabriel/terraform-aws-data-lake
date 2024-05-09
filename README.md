@@ -40,3 +40,5 @@ Files must be uploaded in its own folder so Glue Crawler do the catalog correctl
 - [data-analytics-with-aws-athena](https://dev.to/davidshaek/streamline-your-data-analytics-with-aws-athena-queries-and-terraform-5057)
 - [tableau-sample-data](https://public.tableau.com/app/learn/sample-data)
 - [kaggle-datasets](https://www.kaggle.com/datasets)
+- [s3-trigger-lambda-terraform](https://hands-on.cloud/s3-trigger-lambda-terraform-example/)
+- [event-based-trigger-of-aws-glue-crawler-after-a-file-is-uploaded-into-a-s3](https://stackoverflow.com/questions/48828194/event-based-trigger-of-aws-glue-crawler-after-a-file-is-uploaded-into-a-s3-bucke)
