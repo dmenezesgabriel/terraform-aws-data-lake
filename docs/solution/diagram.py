@@ -31,7 +31,6 @@ def create_data_lake_layer(bucket_name):
 
 graph_attr = {
     "fontsize": "45",
-    "ranksep": "2",
     "ranksep": "1",
 }
 
