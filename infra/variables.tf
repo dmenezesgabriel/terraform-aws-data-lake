@@ -1,11 +1,11 @@
 variable "region" {
   description = "AWS region"
-  default     = "us-east-1"
+  type        = string
 }
 
 variable "bucket_list" {
-  type    = list(string)
-  default = ["sor", "sot", "spec"]
+  description = "Bucket names list"
+  type        = list(string)
 }
 
 variable "lambda_policy_arn" {
