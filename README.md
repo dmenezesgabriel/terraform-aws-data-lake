@@ -6,7 +6,7 @@ This is a sandbox AWS S3 Data Lake provisioning terraform repository. The script
 - SOT (Source of Truth)
 - SPEC (Specialized)
 
-![Solution Diagram](docs/solution.drawio.png)
+![Solution Diagram](docs/solution/solution.png)
 
 ## Usage
 
