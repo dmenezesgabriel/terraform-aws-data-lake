@@ -32,7 +32,7 @@ def create_data_lake_layer(bucket_name):
 graph_attr = {
     "fontsize": "45",
     "ranksep": "2",
-    "ranksep": "2",
+    "ranksep": "1",
 }
 
 with Diagram("Data Lake", graph_attr=graph_attr, direction="LR"):
@@ -56,8 +56,8 @@ with Diagram("Data Lake", graph_attr=graph_attr, direction="LR"):
 
             athena >> glue_data_catalog >> glue_crawler >> bucket
             (
-                s3_object_created_event
-                >> bucket
+                bucket
+                >> s3_object_created_event
                 >> trigger_lambda
                 >> lambda_function
                 >> run_glue_crawler
