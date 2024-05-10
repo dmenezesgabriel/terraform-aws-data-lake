@@ -8,6 +8,12 @@ variable "bucket_list" {
   type        = list(string)
 }
 
+variable "bucket_tags" {
+  type = object({
+    Name = string
+  })
+}
+
 variable "lambda_policy_arn" {
   description = "ARN of the IAM role policy to attach to the lambda role."
   type        = string

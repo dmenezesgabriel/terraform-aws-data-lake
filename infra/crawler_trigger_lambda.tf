@@ -72,8 +72,8 @@ resource "aws_iam_role_policy_attachment" "cralwer_trigger_function_bucket_acces
 
 data "archive_file" "crawler_trigger_lambda" {
   type        = "zip"
-  source_file = "${abspath("${path.module}/..")}/${local.cralwer_trigger_function_path}/${local.crawler_trigger_function_file_name}.py"
-  output_path = "${abspath("${path.module}/..")}/${local.cralwer_trigger_function_path}/${local.crawler_trigger_function_file_name}.zip"
+  source_file = "${abspath("${path.module}/../apps")}/${local.cralwer_trigger_function_path}/${local.crawler_trigger_function_file_name}.py"
+  output_path = "${abspath("${path.module}/../apps")}/${local.cralwer_trigger_function_path}/${local.crawler_trigger_function_file_name}.zip"
 }
 
 resource "aws_lambda_function_url" "crawler_trigger_lambda" {
@@ -86,7 +86,7 @@ resource "aws_lambda_function_url" "crawler_trigger_lambda" {
 resource "aws_lambda_function" "crawler_trigger_lambda" {
   for_each = aws_s3_bucket.bucket
 
-  filename         = "${abspath("${path.module}/..")}/${local.cralwer_trigger_function_path}/${local.crawler_trigger_function_file_name}.zip"
+  filename         = "${abspath("${path.module}/../apps")}/${local.cralwer_trigger_function_path}/${local.crawler_trigger_function_file_name}.zip"
   function_name    = "${each.key}_${local.cralwer_trigger_function_name}"
   handler          = "lambda_function.lambda_handler"
   role             = aws_iam_role.iam_for_crawler_trigger_function.arn

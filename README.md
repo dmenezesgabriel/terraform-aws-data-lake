@@ -26,6 +26,20 @@ This is a sandbox AWS S3 Data Lake provisioning terraform repository. The script
   terraform apply
   ```
 
+- **Terraform Apply DEV**:
+
+  Overrides `terraform.tfvars`
+
+  ```sh
+  terraform apply -var-file environments/dev/dev.tfvars
+  ```
+
+- **Show outputs**:
+
+  ```sh
+  terraform output
+  ```
+
 ## Important!
 
 Files must be uploaded in its own folder so Glue Crawler do the catalog correctly and avoid returning zero records at Athena queries.
@@ -42,3 +56,4 @@ Files must be uploaded in its own folder so Glue Crawler do the catalog correctl
 - [kaggle-datasets](https://www.kaggle.com/datasets)
 - [s3-trigger-lambda-terraform](https://hands-on.cloud/s3-trigger-lambda-terraform-example/)
 - [event-based-trigger-of-aws-glue-crawler-after-a-file-is-uploaded-into-a-s3](https://stackoverflow.com/questions/48828194/event-based-trigger-of-aws-glue-crawler-after-a-file-is-uploaded-into-a-s3-bucke)
+- [Youtube - Terraform Playlist](https://www.youtube.com/playlist?list=PL8HowI-L-3_9bkocmR3JahQ4Y-Pbqs2Nt)

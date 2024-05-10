@@ -3,8 +3,7 @@ provider "aws" {
   default_tags {
 
     tags = {
-      Enviroment = "DEVELOPMENT"
-      Project    = "data-lake-sdx"
+      Project = "data-lake-sdx"
     }
   }
 }
