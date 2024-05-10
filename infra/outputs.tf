@@ -15,7 +15,7 @@ output "current_workspace_name" {
 }
 
 output "bucket_names" {
-  value = [for bucket in aws_s3_bucket.bucket : bucket.bucket]
+  value = [for value in module.data_lake_bucket : value.bucket]
 }
 
 output "crawler_trigger_lambda_names" {

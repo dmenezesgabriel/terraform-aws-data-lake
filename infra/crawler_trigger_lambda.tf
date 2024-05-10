@@ -84,7 +84,7 @@ resource "aws_lambda_function_url" "crawler_trigger_lambda" {
 }
 
 resource "aws_lambda_function" "crawler_trigger_lambda" {
-  for_each = aws_s3_bucket.bucket
+  for_each = module.data_lake_bucket
 
   filename         = "${abspath("${path.module}/../apps")}/${local.cralwer_trigger_function_path}/${local.crawler_trigger_function_file_name}.zip"
   function_name    = "${each.key}_${local.cralwer_trigger_function_name}"
@@ -119,19 +119,19 @@ resource "aws_cloudwatch_log_group" "lambda_function" {
 }
 
 resource "aws_lambda_permission" "allow_bucket_trigger" {
-  for_each = aws_s3_bucket.bucket
+  for_each = module.data_lake_bucket
 
-  statement_id  = "AllowExecutionFromS3Bucket_${each.value.id}"
+  statement_id  = "AllowExecutionFromS3Bucket_${each.value.bucket.id}"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.crawler_trigger_lambda[each.key].function_name
   principal     = "s3.amazonaws.com"
-  source_arn    = each.value.arn
+  source_arn    = each.value.bucket.arn
 }
 
 resource "aws_s3_bucket_notification" "bucket_terraform_notification" {
-  for_each = aws_s3_bucket.bucket
+  for_each = module.data_lake_bucket
 
-  bucket = each.value.id
+  bucket = each.value.bucket.id
   lambda_function {
     lambda_function_arn = aws_lambda_function.crawler_trigger_lambda[each.key].arn
     events              = ["s3:ObjectCreated:*"]

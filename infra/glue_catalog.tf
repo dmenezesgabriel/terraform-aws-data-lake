@@ -4,7 +4,7 @@ locals {
 }
 
 resource "aws_glue_catalog_database" "catalog" {
-  for_each = aws_s3_bucket.bucket
+  for_each = module.data_lake_bucket
   name     = "${local.database_name}_${each.key}"
 
   tags = {
@@ -13,13 +13,13 @@ resource "aws_glue_catalog_database" "catalog" {
 }
 
 resource "aws_glue_crawler" "crawler" {
-  for_each      = aws_s3_bucket.bucket
+  for_each      = module.data_lake_bucket
   name          = "${each.key}_crawler"
   role          = aws_iam_role.glue_crawler_role.arn
   database_name = aws_glue_catalog_database.catalog[each.key].name
 
   s3_target {
-    path = each.value.bucket
+    path = each.value.bucket.bucket
   }
 
   tags = {

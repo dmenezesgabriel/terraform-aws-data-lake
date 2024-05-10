@@ -3,3 +3,4 @@ bucket_list = ["sor", "sot", "spec"]
 bucket_tags = {
   Name = "S3 buckets"
 }
+environment = "dev"

@@ -1,28 +1,24 @@
-resource "aws_s3_bucket" "bucket" {
-  for_each = toset(var.bucket_list)
-  bucket   = "${each.key}-${data.aws_caller_identity.current.account_id}"
-
-  tags = {
-    Name = "${each.key}-bucket"
+locals {
+  buckets = {
+    "sor" : {
+      tags : { name : "sor-bucket" }
+    },
+    "sot" : {
+      tags : { name : "sot-bucket" }
+    },
+    "spec" : {
+      tags : { name : "spec-bucket" }
+    },
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "bucket" {
-  for_each = aws_s3_bucket.bucket
+module "data_lake_bucket" {
+  source = "./modules/bucket"
 
-  bucket = each.value.id
+  for_each = local.buckets
 
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-}
-
-resource "aws_s3_object" "hello" {
-  for_each = aws_s3_bucket.bucket
-
-  bucket = each.value.id
-
-  key     = "hello/hello.json"
-  content = jsonencode({ name = "S3" })
+  bucket_name = "${each.key}-${data.aws_caller_identity.current.account_id}"
+  bucket_tags = {
+    Name = each.value.tags.name
+  }
 }

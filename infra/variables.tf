@@ -3,6 +3,11 @@ variable "region" {
   type        = string
 }
 
+variable "environment" {
+  description = "Project environment"
+  type        = string
+}
+
 variable "bucket_list" {
   description = "Bucket names list"
   type        = list(string)
