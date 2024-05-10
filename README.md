@@ -57,3 +57,4 @@ Files must be uploaded in its own folder so Glue Crawler do the catalog correctl
 - [s3-trigger-lambda-terraform](https://hands-on.cloud/s3-trigger-lambda-terraform-example/)
 - [event-based-trigger-of-aws-glue-crawler-after-a-file-is-uploaded-into-a-s3](https://stackoverflow.com/questions/48828194/event-based-trigger-of-aws-glue-crawler-after-a-file-is-uploaded-into-a-s3-bucke)
 - [Youtube - Terraform Playlist](https://www.youtube.com/playlist?list=PL8HowI-L-3_9bkocmR3JahQ4Y-Pbqs2Nt)
+- [dynamic-terraform-backend](https://brendanthompson.com/posts/2021/10/dynamic-terraform-backend-configuration)
