@@ -13,7 +13,7 @@ locals {
 }
 
 module "data_lake_bucket" {
-  source = "./modules/bucket"
+  source = "../../modules/bucket"
 
   for_each = local.buckets
 
