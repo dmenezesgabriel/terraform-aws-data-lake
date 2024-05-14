@@ -6,10 +6,6 @@ locals {
 resource "aws_glue_catalog_database" "catalog" {
   for_each = module.data_lake_bucket
   name     = "${local.database_name}_${each.key}"
-
-  tags = {
-    Name = "glue-catalog-${each.key}"
-  }
 }
 
 resource "aws_glue_crawler" "crawler" {
@@ -20,10 +16,6 @@ resource "aws_glue_crawler" "crawler" {
 
   s3_target {
     path = each.value.bucket.bucket
-  }
-
-  tags = {
-    Name = "${each.key}_glue_crawler"
   }
 }
 

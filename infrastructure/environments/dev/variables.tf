@@ -24,3 +24,8 @@ variable "lambda_policy_arn" {
   type        = string
   default     = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
+
+variable "enable_s3_object_created_trigger_crawler" {
+  description = "Enable s3_object_created_trigger_crawler"
+  type        = bool
+}

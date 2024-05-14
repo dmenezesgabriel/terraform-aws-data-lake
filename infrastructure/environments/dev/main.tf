@@ -62,7 +62,7 @@ resource "aws_iam_policy" "s3_object_created_trigger_crawler" {
 }
 
 module "s3_object_created_trigger_crawler" {
-  for_each = local.data_lake_layers
+  for_each = var.enable_s3_object_created_trigger_crawler ? local.data_lake_layers : {}
 
   source                    = "../../modules/lambda"
   region                    = var.region
@@ -79,7 +79,7 @@ module "s3_object_created_trigger_crawler" {
 }
 
 resource "aws_lambda_permission" "s3_object_created_trigger_crawler" {
-  for_each = module.data_lake_bucket
+  for_each = var.enable_s3_object_created_trigger_crawler ? module.data_lake_bucket : {}
 
   statement_id  = "AllowExecutionFromS3Bucket_${each.value.bucket.id}"
   action        = "lambda:InvokeFunction"
@@ -89,7 +89,8 @@ resource "aws_lambda_permission" "s3_object_created_trigger_crawler" {
 }
 
 resource "aws_s3_bucket_notification" "bucket_terraform_notification" {
-  for_each = module.data_lake_bucket
+  for_each = var.enable_s3_object_created_trigger_crawler ? module.data_lake_bucket : {}
+
 
   bucket = each.value.bucket.id
   lambda_function {
