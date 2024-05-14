@@ -23,7 +23,7 @@ locals {
   server_side_encryption_instances_number = var.bucket_server_side_encryption ? 1 : 0
 }
 
-resource "aws_kms_key" "terraform_bucket_key" {
+resource "aws_kms_key" "main" {
   count = local.server_side_encryption_instances_number
 
   description             = "This key is used to encrypt bucket objects"
@@ -31,19 +31,19 @@ resource "aws_kms_key" "terraform_bucket_key" {
   enable_key_rotation     = true
 }
 
-resource "aws_kms_alias" "key_alias" {
+resource "aws_kms_alias" "main" {
   count = local.server_side_encryption_instances_number
 
   name          = var.kms_alias_name
-  target_key_id = aws_kms_key.terraform_bucket_key[count.index].key_id
+  target_key_id = aws_kms_key.main[count.index].key_id
 }
 
-resource "aws_s3_bucket" "terraform_state" {
+resource "aws_s3_bucket" "main" {
   bucket = local.bucket_name
 }
 
-resource "aws_s3_bucket_public_access_block" "bucket" {
-  bucket = aws_s3_bucket.terraform_state.id
+resource "aws_s3_bucket_public_access_block" "main" {
+  bucket = aws_s3_bucket.main.id
 
   block_public_acls       = true
   block_public_policy     = true
@@ -51,20 +51,20 @@ resource "aws_s3_bucket_public_access_block" "bucket" {
   restrict_public_buckets = true
 }
 
-resource "aws_s3_bucket_server_side_encryption_configuration" "terraform_state" {
+resource "aws_s3_bucket_server_side_encryption_configuration" "main" {
   count = local.server_side_encryption_instances_number
 
-  bucket = aws_s3_bucket.terraform_state.id
+  bucket = aws_s3_bucket.main.id
 
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm     = "aws:kms"
-      kms_master_key_id = aws_kms_key.terraform_bucket_key[count.index].arn
+      kms_master_key_id = aws_kms_key.main[count.index].arn
     }
   }
 }
 
-resource "aws_dynamodb_table" "terraform_state" {
+resource "aws_dynamodb_table" "main" {
   name           = local.dynamodb_table_name
   read_capacity  = 20
   write_capacity = 20
