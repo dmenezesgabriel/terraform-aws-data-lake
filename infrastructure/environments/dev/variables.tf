@@ -29,3 +29,21 @@ variable "enable_s3_object_created_trigger_crawler" {
   description = "Enable s3_object_created_trigger_crawler"
   type        = bool
 }
+
+variable "kaggle_username" {
+  description = "Kaggle username"
+  type        = string
+  default     = null
+}
+
+variable "kaggle_key" {
+  description = "Kaggle key"
+  type        = string
+  default     = null
+}
+
+variable "kaggle_config_dir" {
+  description = "Kaggle config dir"
+  type        = string
+  default     = null
+}
