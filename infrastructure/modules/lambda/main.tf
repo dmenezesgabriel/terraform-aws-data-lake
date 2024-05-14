@@ -55,6 +55,7 @@ resource "aws_lambda_function" "main" {
   filename         = var.function_zip_file_path
   function_name    = var.function_name
   handler          = var.function_handler
+  layers           = var.function_layers
   role             = aws_iam_role.main.arn
   runtime          = var.function_runtime
   memory_size      = var.function_memory_size

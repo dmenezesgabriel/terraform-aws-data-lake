@@ -4,7 +4,6 @@ variable "bucket_name" {
 }
 
 variable "bucket_tags" {
-  type = object({
-    Name = string
-  })
+  type    = object({})
+  default = {}
 }

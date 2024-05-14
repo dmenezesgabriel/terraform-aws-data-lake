@@ -19,6 +19,13 @@ variable "function_name" {
   type        = string
 }
 
+variable "function_layers" {
+  description = "Lambda function layers arns"
+  type        = list(string)
+  default     = []
+
+}
+
 variable "function_handler" {
   description = "Lambda function handler"
   type        = string
