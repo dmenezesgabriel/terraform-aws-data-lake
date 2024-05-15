@@ -45,27 +45,20 @@ resource "aws_iam_role_policy_attachment" "main" {
 
 }
 
-data "archive_file" "main" {
-  type        = var.function_archive_file_type
-  source_file = var.function_source_file_path
-  output_path = var.function_zip_file_path
-}
-
 resource "aws_cloudwatch_log_group" "main" {
   name              = "/aws/lambda/${aws_lambda_function.main.function_name}"
   retention_in_days = 30
 }
 
 resource "aws_lambda_function" "main" {
-  filename         = var.function_zip_file_path
-  function_name    = var.function_name
-  handler          = var.function_handler
-  layers           = var.function_layers
-  role             = aws_iam_role.main.arn
-  runtime          = var.function_runtime
-  memory_size      = var.function_memory_size
-  timeout          = var.function_timeout
-  source_code_hash = data.archive_file.main.output_base64sha256
+  function_name = var.function_name
+  handler       = var.function_handler
+  role          = aws_iam_role.main.arn
+  memory_size   = var.function_memory_size
+  timeout       = var.function_timeout
+  image_uri     = var.function_image_uri
+  package_type  = "Image"
+
 
   ephemeral_storage {
     size = var.function_ephemeral_storage

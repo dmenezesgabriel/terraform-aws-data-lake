@@ -39,7 +39,7 @@ data "aws_iam_policy_document" "s3_object_created_trigger_crawler" {
 
 }
 
-data "aws_iam_policy_document" "duckdb_lambda" {
+data "aws_iam_policy_document" "lambda_s3_access" {
   version = "2012-10-17"
   statement {
     effect    = "Allow"
@@ -92,3 +92,4 @@ data "aws_iam_policy_document" "glue_job" {
     ]
   }
 }
+

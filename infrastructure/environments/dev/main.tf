@@ -86,7 +86,7 @@ module "duckdb_lambda" {
   source = "../../modules/lambda"
 
   region                    = var.region
-  function_policy_json      = data.aws_iam_policy_document.duckdb_lambda.json
+  function_policy_json      = data.aws_iam_policy_document.lambda_s3_access.json
   function_name             = "duckdb_lambda"
   function_handler          = "lambda_function.lambda_handler"
   function_layers           = [module.duckdb_lambda_layer.lambda_layer_version.arn]
@@ -109,4 +109,41 @@ module "hello_glue_job" {
   glue_job_bucket                   = module.glue_assets_bucket.bucket.bucket
   glue_job_source_file_path         = "${local.apps_dir}/glue_job/main.py"
   glue_job_aditional_python_modules = "kaggle==1.6.3"
+}
+
+#
+resource "aws_ecr_repository" "lambda_container_ecr_repository" {
+  name                 = "lambda_container"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
+
+
+module "push_lambda_container_docker_image" {
+  source = "../../modules/push_image"
+
+  region                      = var.region
+  ecr_repository_name         = aws_ecr_repository.lambda_container_ecr_repository.name
+  ecr_registry_uri            = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com"
+  container_image_tag         = "latest"
+  container_image_source_path = "${local.apps_dir}/lambda_docker"
+  force_image_rebuild         = false
+}
+
+module "lambda_container" {
+  source = "../../modules/lambda_container"
+
+  region               = var.region
+  function_image_uri   = "${aws_ecr_repository.lambda_container_ecr_repository.repository_url}:latest"
+  function_policy_json = data.aws_iam_policy_document.lambda_s3_access.json
+  function_name        = "profile_faker"
+  function_handler     = "lambda_function.lambda_handler"
+  function_memory_size = 128
+  function_timeout     = 15
+  lambda_function_environment_variables = {
+    REGION_NAME = var.region
+  }
 }
