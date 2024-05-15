@@ -60,3 +60,5 @@ Files must be uploaded in its own folder so Glue Crawler do the catalog correctl
 - [dynamic-terraform-backend](https://dev.to/aws-builders/mastering-terraform-how-to-manage-multiple-environments-with-dynamic-s3-backends-1p9)
 - [best-practices-for-terraform](https://cloud.google.com/docs/terraform/best-practices-for-terraform?hl=pt-br)
 - [glue-terraform](https://www.youtube.com/watch?v=CYZ3ZjXdQP8)
+- [deploying-containerized-aws-lambda-functions-with-terraform](https://medium.com/akava/deploying-containerized-aws-lambda-functions-with-terraform-7147b9815599)
+- [terraform-docker-and-aws-lambda](https://ragunathrajasekaran.medium.com/building-scalable-serverless-applications-with-terraform-docker-and-aws-lambda-part-1-2-e9ff688f2794)
