@@ -93,3 +93,49 @@ data "aws_iam_policy_document" "glue_job" {
   }
 }
 
+data "aws_iam_policy_document" "lambda_athena_access" {
+  version = "2012-10-17"
+  statement {
+    effect = "Allow"
+    resources = [
+      "*",
+    ]
+
+    actions = [
+      "s3:GetBucketLocation",
+      "s3:GetObject",
+      "s3:ListBucket",
+      "s3:ListBucketMultipartUploads",
+      "s3:ListMultipartUploadParts",
+      "s3:AbortMultipartUpload",
+      "s3:CreateBucket",
+      "s3:PutObject"
+    ]
+  }
+  statement {
+    effect    = "Allow"
+    resources = ["*"]
+
+    actions = [
+      "athena:StartQueryExecution",
+      "athena:StopQueryExecution",
+      "athena:GetQueryExecution",
+      "athena:GetQueryResults",
+      "athena:GetDataCatalog",
+      "glue:GetDatabase",
+      "glue:GetTable",
+      "glue:GetTables"
+    ]
+  }
+
+  statement {
+    effect    = "Allow"
+    resources = ["*"]
+
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+  }
+}

@@ -64,3 +64,4 @@ Files must be uploaded in its own folder so Glue Crawler do the catalog correctl
 - [terraform-docker-and-aws-lambda](https://ragunathrajasekaran.medium.com/building-scalable-serverless-applications-with-terraform-docker-and-aws-lambda-part-1-2-e9ff688f2794)
 - [aws-glue-job-input-parameters](https://stackoverflow.com/questions/52316668/aws-glue-job-input-parameters)
 - [problem-in-getting-result-from-aws-ecr-get-login](https://stackoverflow.com/questions/54232443/problem-in-getting-result-from-aws-ecr-get-login)
+- [athena-output-bucket-error](https://repost.aws/knowledge-center/athena-output-bucket-error)

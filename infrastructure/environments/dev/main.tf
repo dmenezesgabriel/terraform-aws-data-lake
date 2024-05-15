@@ -100,49 +100,69 @@ module "duckdb_lambda" {
   }
 }
 
-module "hello_glue_job" {
-  source = "../../modules/glue_job"
+# module "hello_glue_job" {
+#   source = "../../modules/glue_job"
 
-  region                            = var.region
-  glue_job_policy_json              = data.aws_iam_policy_document.glue_job.json
-  glue_job_name                     = "hello-world"
-  glue_job_bucket                   = module.glue_assets_bucket.bucket.bucket
-  glue_job_source_file_path         = "${local.apps_dir}/glue_job/main.py"
-  glue_job_aditional_python_modules = "kaggle==1.6.3"
-}
+#   region                            = var.region
+#   glue_job_policy_json              = data.aws_iam_policy_document.glue_job.json
+#   glue_job_name                     = "hello-world"
+#   glue_job_bucket                   = module.glue_assets_bucket.bucket.bucket
+#   glue_job_source_file_path         = "${local.apps_dir}/glue_job/main.py"
+#   glue_job_aditional_python_modules = "kaggle==1.6.3"
+# }
 
-#
-resource "aws_ecr_repository" "lambda_container_ecr_repository" {
-  name                 = "lambda_container"
-  image_tag_mutability = "MUTABLE"
+# #
+# resource "aws_ecr_repository" "lambda_container_ecr_repository" {
+#   name                 = "lambda_container"
+#   image_tag_mutability = "MUTABLE"
 
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-}
+#   image_scanning_configuration {
+#     scan_on_push = true
+#   }
+# }
 
 
-module "push_lambda_container_docker_image" {
-  source = "../../modules/push_image"
+# module "push_lambda_container_docker_image" {
+#   source = "../../modules/push_image"
 
-  region                      = var.region
-  ecr_repository_name         = aws_ecr_repository.lambda_container_ecr_repository.name
-  ecr_registry_uri            = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com"
-  container_image_tag         = "latest"
-  container_image_source_path = "${local.apps_dir}/lambda_container"
-  force_image_rebuild         = true
-}
+#   region                      = var.region
+#   ecr_repository_name         = aws_ecr_repository.lambda_container_ecr_repository.name
+#   ecr_registry_uri            = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com"
+#   container_image_tag         = "latest"
+#   container_image_source_path = "${local.apps_dir}/lambda_container"
+#   force_image_rebuild         = false
+# }
 
-module "lambda_container" {
-  source = "../../modules/lambda_container"
+# module "lambda_container" {
+#   source = "../../modules/lambda_container"
 
-  region               = var.region
-  function_image_uri   = "${aws_ecr_repository.lambda_container_ecr_repository.repository_url}:latest"
-  function_policy_json = data.aws_iam_policy_document.lambda_s3_access.json
-  function_name        = "lambda_container"
-  function_memory_size = 128
-  function_timeout     = 15
+#   region               = var.region
+#   function_image_uri   = "${aws_ecr_repository.lambda_container_ecr_repository.repository_url}:latest"
+#   function_policy_json = data.aws_iam_policy_document.lambda_s3_access.json
+#   function_name        = "lambda_container"
+#   function_memory_size = 128
+#   function_timeout     = 15
+#   lambda_function_environment_variables = {
+#     REGION_NAME = var.region
+#   }
+# }
+
+
+module "athena_lambda" {
+  source = "../../modules/lambda"
+
+  region                    = var.region
+  function_policy_json      = data.aws_iam_policy_document.lambda_athena_access.json
+  function_name             = "athena_lambda"
+  function_handler          = "lambda_function.lambda_handler"
+  function_source_file_path = "${local.apps_dir}/lambda_function_athena/lambda_function.py"
+  function_zip_file_path    = "${local.apps_dir}/lambda_function_athena/lambda_function.zip"
+  function_runtime          = "python3.11"
+  function_memory_size      = 128
+  function_timeout          = 15
   lambda_function_environment_variables = {
-    REGION_NAME = var.region
+    ATHENA_REGION      = var.region
+    ATHENA_WORKGROUP   = aws_athena_workgroup.athena_users_workgroup.name
+    ATHENA_OUTPUT_PATH = "s3://${aws_s3_bucket.athena_query_results.bucket}"
   }
 }
