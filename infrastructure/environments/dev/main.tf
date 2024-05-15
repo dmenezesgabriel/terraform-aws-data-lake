@@ -23,6 +23,16 @@ module "data_lake_bucket" {
   bucket_name = "${each.key}-${data.aws_caller_identity.current.account_id}"
 }
 
+module "lambda_layers_bucket" {
+  source      = "../../modules/bucket"
+  bucket_name = "lambda-layers-${data.aws_caller_identity.current.account_id}"
+}
+
+module "glue_assets_bucket" {
+  source      = "../../modules/bucket"
+  bucket_name = "glue-assets-${data.aws_caller_identity.current.account_id}"
+}
+
 resource "aws_iam_policy" "s3_object_created_trigger_crawler" {
   for_each = local.data_lake_layers
 
@@ -44,6 +54,35 @@ resource "aws_iam_policy" "s3_object_created_trigger_crawler" {
       {
         Action = [
           "glue:StartCrawler",
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+      {
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "requests_lambda" {
+  name = "requests_lambda"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "s3:ListBucket",
+          "s3:GetObject",
+          "s3:CopyObject",
+          "s3:HeadObject"
         ]
         Effect   = "Allow"
         Resource = "*"
@@ -101,41 +140,6 @@ resource "aws_s3_bucket_notification" "bucket_terraform_notification" {
 }
 
 
-module "lambda_layers_bucket" {
-  source      = "../../modules/bucket"
-  bucket_name = "lambda-layers-${data.aws_caller_identity.current.account_id}"
-}
-
-
-resource "aws_iam_policy" "requests_lambda" {
-  name = "requests_lambda"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = [
-          "s3:ListBucket",
-          "s3:GetObject",
-          "s3:CopyObject",
-          "s3:HeadObject"
-        ]
-        Effect   = "Allow"
-        Resource = "*"
-      },
-      {
-        Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents"
-        ]
-        Effect   = "Allow"
-        Resource = "*"
-      }
-    ]
-  })
-}
-
 resource "null_resource" "requests_lambda_layer" {
   triggers = {
     requirements = filesha1(local.lambda_function_requests_requirements)
@@ -176,4 +180,14 @@ module "requests_lambda" {
   lambda_function_environment_variables = {
     REGION_NAME = var.region
   }
+}
+
+
+module "hello_glue_job" {
+  source = "../../modules/glue_job"
+
+  region                    = var.region
+  glue_job_name             = "hello-world"
+  glue_job_bucket           = module.glue_assets_bucket.bucket.bucket
+  glue_job_source_file_path = "${local.apps_dir}/glue_job/main.py"
 }

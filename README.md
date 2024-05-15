@@ -59,3 +59,4 @@ Files must be uploaded in its own folder so Glue Crawler do the catalog correctl
 - [Youtube - Terraform Playlist](https://www.youtube.com/playlist?list=PL8HowI-L-3_9bkocmR3JahQ4Y-Pbqs2Nt)
 - [dynamic-terraform-backend](https://dev.to/aws-builders/mastering-terraform-how-to-manage-multiple-environments-with-dynamic-s3-backends-1p9)
 - [best-practices-for-terraform](https://cloud.google.com/docs/terraform/best-practices-for-terraform?hl=pt-br)
+- [glue-terraform](https://www.youtube.com/watch?v=CYZ3ZjXdQP8)
