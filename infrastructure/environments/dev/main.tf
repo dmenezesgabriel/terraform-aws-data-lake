@@ -1,8 +1,8 @@
 locals {
-  apps_dir                              = abspath("${path.module}/../../../apps")
-  lambda_function_requests_dir          = "${local.apps_dir}/requests"
-  lambda_function_requests_requirements = "${local.lambda_function_requests_dir}/requirements.txt"
-  requests_lambda_layer_path            = "${local.lambda_function_requests_dir}/layer"
+  apps_dir                            = abspath("${path.module}/../../../apps")
+  lambda_function_duckdb_dir          = "${local.apps_dir}/lambda_function_duckdb"
+  lambda_function_duckdb_requirements = "${local.lambda_function_duckdb_dir}/requirements.txt"
+  duckdb_lambda_layer_path            = "${local.lambda_function_duckdb_dir}/layer"
   data_lake_layers = {
     "sor" : {
       tags : { name : "sor" }
@@ -71,8 +71,8 @@ resource "aws_iam_policy" "s3_object_created_trigger_crawler" {
   })
 }
 
-resource "aws_iam_policy" "requests_lambda" {
-  name = "requests_lambda"
+resource "aws_iam_policy" "duckdb_lambda" {
+  name = "duckdb_lambda"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -140,42 +140,43 @@ resource "aws_s3_bucket_notification" "bucket_terraform_notification" {
 }
 
 
-resource "null_resource" "requests_lambda_layer" {
+resource "null_resource" "duckdb_lambda_layer" {
   triggers = {
-    requirements = filesha1(local.lambda_function_requests_requirements)
+    requirements = filesha1(local.lambda_function_duckdb_requirements)
   }
 
   provisioner "local-exec" {
     command = <<EOT
-      rm -r ${local.requests_lambda_layer_path}/python
-      mkdir -p ${local.requests_lambda_layer_path}/python
-      pip3 install -r ${local.lambda_function_requests_requirements} -t ${local.requests_lambda_layer_path}/python/
+      rm -r ${local.duckdb_lambda_layer_path}/python
+      mkdir -p ${local.duckdb_lambda_layer_path}/python
+      pip3 install -r ${local.lambda_function_duckdb_requirements} -t ${local.duckdb_lambda_layer_path}/python/
     EOT
   }
 }
 
 
-module "requests_lambda_layer" {
+module "duckdb_lambda_layer" {
   source = "../../modules/lambda_layer"
 
-  lambda_layer_name                        = "python_requests"
-  lambda_layer_source_directory            = local.requests_lambda_layer_path
-  lambda_layer_zip_file_output_path        = "${local.lambda_function_requests_dir}/requests_lambda_layer.zip"
+  lambda_layer_name                        = "python_duckdb"
+  lambda_layer_source_directory            = local.duckdb_lambda_layer_path
+  lambda_layer_zip_file_output_path        = "${local.lambda_function_duckdb_dir}/duckdb_lambda_layer.zip"
   lambda_layer_bucket_id                   = module.lambda_layers_bucket.bucket.id
   lambda_layer_version_compatible_runtimes = ["python3.11"]
 
-  depends_on = [null_resource.requests_lambda_layer]
+  depends_on = [null_resource.duckdb_lambda_layer]
 }
 
-module "requests_lambda" {
-  source                    = "../../modules/lambda"
+module "duckdb_lambda" {
+  source = "../../modules/lambda"
+
   region                    = var.region
-  function_policy_arn       = aws_iam_policy.requests_lambda.arn
-  function_name             = "requests_lambda"
+  function_policy_arn       = aws_iam_policy.duckdb_lambda.arn
+  function_name             = "duckdb_lambda"
   function_handler          = "lambda_function.lambda_handler"
-  function_layers           = [module.requests_lambda_layer.lambda_layer_version.arn]
-  function_source_file_path = "${local.apps_dir}/requests/lambda_function.py"
-  function_zip_file_path    = "${local.apps_dir}/requests/lambda_function.zip"
+  function_layers           = [module.duckdb_lambda_layer.lambda_layer_version.arn]
+  function_source_file_path = "${local.apps_dir}/lambda_function_duckdb/lambda_function.py"
+  function_zip_file_path    = "${local.apps_dir}/lambda_function_duckdb/lambda_function.zip"
   function_runtime          = "python3.11"
   lambda_function_environment_variables = {
     REGION_NAME = var.region
