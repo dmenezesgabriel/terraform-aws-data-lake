@@ -3,6 +3,10 @@ variable "region" {
   type        = string
 }
 
+variable "glue_job_policy_json" {
+  description = "Glue job policy json"
+}
+
 variable "glue_job_name" {
   description = "Glue job name"
   type        = string

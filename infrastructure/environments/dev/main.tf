@@ -1,21 +1,3 @@
-locals {
-  apps_dir                            = abspath("${path.module}/../../../apps")
-  lambda_function_duckdb_dir          = "${local.apps_dir}/lambda_function_duckdb"
-  lambda_function_duckdb_requirements = "${local.lambda_function_duckdb_dir}/requirements.txt"
-  duckdb_lambda_layer_path            = "${local.lambda_function_duckdb_dir}/layer"
-  data_lake_layers = {
-    "sor" : {
-      tags : { name : "sor" }
-    },
-    "sot" : {
-      tags : { name : "sot" }
-    },
-    "spec" : {
-      tags : { name : "spec" }
-    },
-  }
-}
-
 module "data_lake_bucket" {
   for_each = local.data_lake_layers
 
@@ -31,72 +13,6 @@ module "lambda_layers_bucket" {
 module "glue_assets_bucket" {
   source      = "../../modules/bucket"
   bucket_name = "glue-assets-${data.aws_caller_identity.current.account_id}"
-}
-
-data "aws_iam_policy_document" "s3_object_created_trigger_crawler" {
-
-  for_each = local.data_lake_layers
-
-  version = "2012-10-17"
-  statement {
-    effect    = "Allow"
-    resources = ["*"]
-
-    actions = [
-      "s3:PutObject",
-      "s3:GetObject",
-      "s3:DeleteObject",
-      "s3:ListBucket"
-    ]
-  }
-
-  statement {
-    effect    = "Allow"
-    resources = ["*"]
-
-    actions = [
-      "glue:StartCrawler",
-    ]
-  }
-
-  statement {
-    effect    = "Allow"
-    resources = ["*"]
-
-    actions = [
-      "logs:CreateLogGroup",
-      "logs:CreateLogStream",
-      "logs:PutLogEvents"
-    ]
-  }
-
-}
-
-data "aws_iam_policy_document" "duckdb_lambda" {
-  version = "2012-10-17"
-  statement {
-    effect    = "Allow"
-    resources = ["*"]
-
-    actions = [
-      "s3:PutObject",
-      "s3:GetObject",
-      "s3:DeleteObject",
-      "s3:ListBucket"
-    ]
-  }
-
-  statement {
-    effect    = "Allow"
-    resources = ["*"]
-
-    actions = [
-      "logs:CreateLogGroup",
-      "logs:CreateLogStream",
-      "logs:PutLogEvents"
-    ]
-  }
-
 }
 
 module "s3_object_created_trigger_crawler" {
@@ -184,11 +100,11 @@ module "duckdb_lambda" {
   }
 }
 
-
 module "hello_glue_job" {
   source = "../../modules/glue_job"
 
   region                    = var.region
+  glue_job_policy_json      = data.aws_iam_policy_document.glue_job.json
   glue_job_name             = "hello-world"
   glue_job_bucket           = module.glue_assets_bucket.bucket.bucket
   glue_job_source_file_path = "${local.apps_dir}/glue_job/main.py"

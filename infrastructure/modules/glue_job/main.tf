@@ -23,19 +23,7 @@ data "aws_iam_policy_document" "role" {
   }
 }
 
-data "aws_iam_policy_document" "policy" {
-  statement {
-    effect    = "Allow"
-    resources = ["*"]
 
-    actions = [
-      "s3:PutObject",
-      "s3:GetObject",
-      "s3:DeleteObject",
-      "s3:ListBucket"
-    ]
-  }
-}
 
 resource "aws_iam_role" "main" {
   name               = "iam_role-${var.glue_job_name}"
@@ -44,7 +32,7 @@ resource "aws_iam_role" "main" {
 
 resource "aws_iam_policy" "main" {
   name   = "iam_policy-${var.glue_job_name}"
-  policy = data.aws_iam_policy_document.policy.json
+  policy = var.glue_job_policy_json
 
 }
 
