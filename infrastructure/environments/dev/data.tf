@@ -67,14 +67,28 @@ data "aws_iam_policy_document" "duckdb_lambda" {
 
 data "aws_iam_policy_document" "glue_job" {
   statement {
-    effect    = "Allow"
-    resources = [for module in module.data_lake_bucket : "${module.bucket.arn}/*"]
+    effect = "Allow"
+    resources = concat(
+      flatten([for module in module.data_lake_bucket : "${module.bucket.arn}/*"]),
+      ["${module.glue_assets_bucket.bucket.arn}/*"]
+    )
 
     actions = [
       "s3:PutObject",
       "s3:GetObject",
       "s3:DeleteObject",
       "s3:ListBucket"
+    ]
+  }
+
+  statement {
+    effect    = "Allow"
+    resources = ["*"]
+
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
     ]
   }
 }

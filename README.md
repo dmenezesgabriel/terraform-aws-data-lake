@@ -62,3 +62,4 @@ Files must be uploaded in its own folder so Glue Crawler do the catalog correctl
 - [glue-terraform](https://www.youtube.com/watch?v=CYZ3ZjXdQP8)
 - [deploying-containerized-aws-lambda-functions-with-terraform](https://medium.com/akava/deploying-containerized-aws-lambda-functions-with-terraform-7147b9815599)
 - [terraform-docker-and-aws-lambda](https://ragunathrajasekaran.medium.com/building-scalable-serverless-applications-with-terraform-docker-and-aws-lambda-part-1-2-e9ff688f2794)
+- [aws-glue-job-input-parameters](https://stackoverflow.com/questions/52316668/aws-glue-job-input-parameters)

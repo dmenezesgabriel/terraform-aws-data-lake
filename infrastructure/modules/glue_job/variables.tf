@@ -59,3 +59,20 @@ variable "glue_job_bucket" {
   type        = string
 }
 
+variable "glue_job_customer_driver_env_vars" {
+  description = "Glue job environment variables ex:CUSTOMER_KEY3=VAL3,KEY4=VAL4"
+  type        = string
+  default     = null
+}
+
+variable "glue_job_customer_executor_env_vars" {
+  description = "Glue job environment variables ex:CUSTOMER_KEY3=VAL3,KEY4=VAL4"
+  type        = string
+  default     = null
+}
+
+variable "glue_job_aditional_python_modules" {
+  description = "Glue job aditional python modules"
+  type        = string
+  default     = null
+}

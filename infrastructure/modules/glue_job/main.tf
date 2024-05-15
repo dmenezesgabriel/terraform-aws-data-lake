@@ -26,12 +26,12 @@ data "aws_iam_policy_document" "role" {
 
 
 resource "aws_iam_role" "main" {
-  name               = "iam_role-${var.glue_job_name}"
+  name               = "iam_role_${var.glue_job_name}"
   assume_role_policy = data.aws_iam_policy_document.role.json
 }
 
 resource "aws_iam_policy" "main" {
-  name   = "iam_policy-${var.glue_job_name}"
+  name   = "iam_policy_${var.glue_job_name}"
   policy = var.glue_job_policy_json
 
 }
@@ -48,6 +48,12 @@ resource "aws_s3_object" "test_deploy_script_s3" {
   etag   = filemd5(var.glue_job_source_file_path)
 }
 
+resource "aws_cloudwatch_log_group" "main" {
+  name              = "/aws/glue-job/${var.glue_job_name}"
+  retention_in_days = 30
+}
+
+
 resource "aws_glue_job" "test_deploy_script" {
   glue_version      = var.glue_job_version
   max_retries       = var.glue_job_max_retries
@@ -63,11 +69,16 @@ resource "aws_glue_job" "test_deploy_script" {
   }
 
   default_arguments = {
-    "--class"                   = "GlueApp"
-    "--enable-job-insights"     = "true"
-    "--enable-auto-scaling"     = "false"
-    "--enable-glue-datacatalog" = "true"
-    "--job-language"            = "python"
-    "--job-bookmark-option"     = "job-bookmark-disable"
+    "--continuous-log-logGroup"    = aws_cloudwatch_log_group.main.name
+    "--region"                     = var.region
+    "--class"                      = "GlueApp"
+    "--enable-job-insights"        = "true"
+    "--enable-auto-scaling"        = "false"
+    "--enable-glue-datacatalog"    = "true"
+    "--job-language"               = "python"
+    "--job-bookmark-option"        = "job-bookmark-disable"
+    "--customer-driver-env-vars"   = var.glue_job_customer_driver_env_vars
+    "--customer-executor-env-vars" = var.glue_job_customer_executor_env_vars
+    "--additional-python-modules"  = var.glue_job_aditional_python_modules
   }
 }

@@ -103,9 +103,10 @@ module "duckdb_lambda" {
 module "hello_glue_job" {
   source = "../../modules/glue_job"
 
-  region                    = var.region
-  glue_job_policy_json      = data.aws_iam_policy_document.glue_job.json
-  glue_job_name             = "hello-world"
-  glue_job_bucket           = module.glue_assets_bucket.bucket.bucket
-  glue_job_source_file_path = "${local.apps_dir}/glue_job/main.py"
+  region                            = var.region
+  glue_job_policy_json              = data.aws_iam_policy_document.glue_job.json
+  glue_job_name                     = "hello-world"
+  glue_job_bucket                   = module.glue_assets_bucket.bucket.bucket
+  glue_job_source_file_path         = "${local.apps_dir}/glue_job/main.py"
+  glue_job_aditional_python_modules = "kaggle==1.6.3"
 }
