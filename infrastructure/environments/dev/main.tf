@@ -33,71 +33,70 @@ module "glue_assets_bucket" {
   bucket_name = "glue-assets-${data.aws_caller_identity.current.account_id}"
 }
 
-resource "aws_iam_policy" "s3_object_created_trigger_crawler" {
+data "aws_iam_policy_document" "s3_object_created_trigger_crawler" {
+
   for_each = local.data_lake_layers
 
-  name = "s3_object_created_trigger_crawler_${each.key}"
+  version = "2012-10-17"
+  statement {
+    effect    = "Allow"
+    resources = ["*"]
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = [
-          "s3:ListBucket",
-          "s3:GetObject",
-          "s3:CopyObject",
-          "s3:HeadObject"
-        ]
-        Effect   = "Allow"
-        Resource = "*"
-      },
-      {
-        Action = [
-          "glue:StartCrawler",
-        ]
-        Effect   = "Allow"
-        Resource = "*"
-      },
-      {
-        Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents"
-        ]
-        Effect   = "Allow"
-        Resource = "*"
-      }
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject",
+      "s3:DeleteObject",
+      "s3:ListBucket"
     ]
-  })
+  }
+
+  statement {
+    effect    = "Allow"
+    resources = ["*"]
+
+    actions = [
+      "glue:StartCrawler",
+    ]
+  }
+
+  statement {
+    effect    = "Allow"
+    resources = ["*"]
+
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+  }
+
 }
 
-resource "aws_iam_policy" "duckdb_lambda" {
-  name = "duckdb_lambda"
+data "aws_iam_policy_document" "duckdb_lambda" {
+  version = "2012-10-17"
+  statement {
+    effect    = "Allow"
+    resources = ["*"]
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = [
-          "s3:ListBucket",
-          "s3:GetObject",
-          "s3:CopyObject",
-          "s3:HeadObject"
-        ]
-        Effect   = "Allow"
-        Resource = "*"
-      },
-      {
-        Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents"
-        ]
-        Effect   = "Allow"
-        Resource = "*"
-      }
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject",
+      "s3:DeleteObject",
+      "s3:ListBucket"
     ]
-  })
+  }
+
+  statement {
+    effect    = "Allow"
+    resources = ["*"]
+
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+  }
+
 }
 
 module "s3_object_created_trigger_crawler" {
@@ -105,7 +104,7 @@ module "s3_object_created_trigger_crawler" {
 
   source                    = "../../modules/lambda"
   region                    = var.region
-  function_policy_arn       = aws_iam_policy.s3_object_created_trigger_crawler[each.key].arn
+  function_policy_json      = data.aws_iam_policy_document.s3_object_created_trigger_crawler[each.key].json
   function_name             = "s3_object_created_trigger_crawler_${each.key}"
   function_handler          = "lambda_function.lambda_handler"
   function_source_file_path = "${local.apps_dir}/s3_object_created_trigger_crawler/lambda_function.py"
@@ -171,13 +170,15 @@ module "duckdb_lambda" {
   source = "../../modules/lambda"
 
   region                    = var.region
-  function_policy_arn       = aws_iam_policy.duckdb_lambda.arn
+  function_policy_json      = data.aws_iam_policy_document.duckdb_lambda.json
   function_name             = "duckdb_lambda"
   function_handler          = "lambda_function.lambda_handler"
   function_layers           = [module.duckdb_lambda_layer.lambda_layer_version.arn]
   function_source_file_path = "${local.apps_dir}/lambda_function_duckdb/lambda_function.py"
   function_zip_file_path    = "${local.apps_dir}/lambda_function_duckdb/lambda_function.zip"
   function_runtime          = "python3.11"
+  function_memory_size      = 128
+  function_timeout          = 15
   lambda_function_environment_variables = {
     REGION_NAME = var.region
   }

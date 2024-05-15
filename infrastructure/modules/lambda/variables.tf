@@ -9,9 +9,8 @@ variable "lambda_policy_arn" {
   default     = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
-variable "function_policy_arn" {
-  description = "Lambda function policy arn"
-  type        = string
+variable "function_policy_json" {
+  description = "Lambda function policy json"
 }
 
 variable "function_name" {

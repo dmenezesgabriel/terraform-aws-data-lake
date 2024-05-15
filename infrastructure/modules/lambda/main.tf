@@ -10,7 +10,7 @@ terraform {
   }
 }
 
-data "aws_iam_policy_document" "main" {
+data "aws_iam_policy_document" "role" {
   statement {
     effect = "Allow"
 
@@ -24,11 +24,16 @@ data "aws_iam_policy_document" "main" {
 }
 
 resource "aws_iam_role" "main" {
-  name               = "iam_lambda_${var.function_name}"
-  assume_role_policy = data.aws_iam_policy_document.main.json
+  name               = "iam_role_${var.function_name}"
+  assume_role_policy = data.aws_iam_policy_document.role.json
 }
 
-resource "aws_iam_role_policy_attachment" "default" {
+resource "aws_iam_policy" "main" {
+  name   = "iam_policy_${var.function_name}"
+  policy = var.function_policy_json
+}
+
+resource "aws_iam_role_policy_attachment" "role" {
   role       = aws_iam_role.main.name
   policy_arn = var.lambda_policy_arn
 
@@ -36,7 +41,7 @@ resource "aws_iam_role_policy_attachment" "default" {
 
 resource "aws_iam_role_policy_attachment" "main" {
   role       = aws_iam_role.main.name
-  policy_arn = var.function_policy_arn
+  policy_arn = aws_iam_policy.main.arn
 
 }
 

@@ -37,15 +37,15 @@ data "aws_iam_policy_document" "policy" {
   }
 }
 
+resource "aws_iam_role" "main" {
+  name               = "iam_role-${var.glue_job_name}"
+  assume_role_policy = data.aws_iam_policy_document.role.json
+}
+
 resource "aws_iam_policy" "main" {
   name   = "iam_policy-${var.glue_job_name}"
   policy = data.aws_iam_policy_document.policy.json
 
-}
-
-resource "aws_iam_role" "main" {
-  name               = "iam_role-${var.glue_job_name}"
-  assume_role_policy = data.aws_iam_policy_document.role.json
 }
 
 resource "aws_iam_role_policy_attachment" "main" {
