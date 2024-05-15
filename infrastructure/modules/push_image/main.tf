@@ -1,7 +1,7 @@
 locals {
   docker_img_src_sha256 = sha256(join("", [for f in fileset(".", "${var.container_image_source_path}/**") : file(f)]))
   docker_build_command  = <<-EOT
-        docker build -t ${var.ecr_registry_uri}/${var.ecr_repository_name}:${var.container_image_tag} \
+        docker build --no-cache -t ${var.ecr_registry_uri}/${var.ecr_repository_name}:${var.container_image_tag} \
             -f ${var.container_image_source_path}/Dockerfile ${var.container_image_source_path}/
 
         aws ecr get-login-password --region ${var.region} | \

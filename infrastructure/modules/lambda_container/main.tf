@@ -52,7 +52,6 @@ resource "aws_cloudwatch_log_group" "main" {
 
 resource "aws_lambda_function" "main" {
   function_name = var.function_name
-  handler       = var.function_handler
   role          = aws_iam_role.main.arn
   memory_size   = var.function_memory_size
   timeout       = var.function_timeout

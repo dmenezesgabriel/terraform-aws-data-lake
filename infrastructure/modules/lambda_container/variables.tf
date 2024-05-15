@@ -18,10 +18,7 @@ variable "function_name" {
   type        = string
 }
 
-variable "function_handler" {
-  description = "Lambda function handler"
-  type        = string
-}
+
 variable "function_image_uri" {
   description = "Lambda function image uri"
   type        = string

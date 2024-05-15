@@ -10,11 +10,6 @@ def lambda_handler(event, context):
         "statusCode": 200,
         "headers": {"Content-Type": "application/json"},
         "body": json.dumps(
-            {
-                "profile": {
-                    "name": fake.name(),
-                    "address": fake.address(),
-                },
-            }
+            {"profile": {"name": fake.name(), "address": fake.address()}}
         ),
     }

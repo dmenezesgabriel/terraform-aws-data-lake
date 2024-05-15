@@ -129,8 +129,8 @@ module "push_lambda_container_docker_image" {
   ecr_repository_name         = aws_ecr_repository.lambda_container_ecr_repository.name
   ecr_registry_uri            = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com"
   container_image_tag         = "latest"
-  container_image_source_path = "${local.apps_dir}/lambda_docker"
-  force_image_rebuild         = false
+  container_image_source_path = "${local.apps_dir}/lambda_container"
+  force_image_rebuild         = true
 }
 
 module "lambda_container" {
@@ -139,8 +139,7 @@ module "lambda_container" {
   region               = var.region
   function_image_uri   = "${aws_ecr_repository.lambda_container_ecr_repository.repository_url}:latest"
   function_policy_json = data.aws_iam_policy_document.lambda_s3_access.json
-  function_name        = "profile_faker"
-  function_handler     = "lambda_function.lambda_handler"
+  function_name        = "lambda_container"
   function_memory_size = 128
   function_timeout     = 15
   lambda_function_environment_variables = {
