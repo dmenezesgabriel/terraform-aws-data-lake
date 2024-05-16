@@ -68,8 +68,6 @@ def lambda_handler(event, context):
 
 
 if __name__ == "__main__":
-    import json
-
     lambda_client = boto3.client("lambda")
     event = {
         "database_name": "database_sor",
