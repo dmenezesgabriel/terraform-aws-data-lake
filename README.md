@@ -67,3 +67,6 @@ Files must be uploaded in its own folder so Glue Crawler do the catalog correctl
 - [athena-output-bucket-error](https://repost.aws/knowledge-center/athena-output-bucket-error)
 - [restricting-user-access-to-pages-using-aws-cognito](https://levelup.gitconnected.com/building-a-multi-page-app-with-streamlit-and-restricting-user-access-to-pages-using-aws-cognito-89a1fb5364a3)
 - [terraform-aws-api-gateway-v2](https://github.com/comtravo/terraform-aws-api-gateway-v2)
+- [serverless-openapi-amazon-api-gateway](https://blog.serverlessadvocate.com/serverless-openapi-amazon-api-gateway-with-the-aws-cdk-part-1-8a90477ebc24)
+- [api-gateway-to-a-lambda-function-using-lambda-proxy-and-non-proxyintegration-with-openapi-specs](https://dev.to/aws-builders/api-gateway-to-a-lambda-function-using-lambda-proxy-and-non-proxyintegration-with-openapi-specs-5eak)
+- [create-an-internal-amazon-api-gateway-with-terraform](https://medium.com/@sophie.cosgrove/create-an-internal-amazon-api-gateway-with-terraform-6a7d319fc0fd)
