@@ -1,6 +1,8 @@
 from diagrams import Cluster, Diagram, Edge
 from diagrams.aws.analytics import Athena, GlueCrawlers, GlueDataCatalog
 from diagrams.aws.compute import LambdaFunction
+from diagrams.aws.network import APIGateway
+from diagrams.aws.security import Cognito
 from diagrams.aws.storage import S3
 from diagrams.programming.flowchart import StartEnd
 
@@ -37,6 +39,9 @@ graph_attr = {
 with Diagram("Data Lake", graph_attr=graph_attr, direction="LR"):
     athena = Athena("Amazon Athena")
     duckdb_lambda = LambdaFunction(label="DuckDB Lambda")
+    athena_lambda = LambdaFunction(label="Athena Lambda")
+    analytics_api = APIGateway(label="Analytics API")
+    cognito_analytics_pool = Cognito(label="Cognito Analytics Users")
     trigger_lambda = Edge(label="trigger lambda")
     run_glue_crawler = Edge(label="run glue crawler")
 
@@ -64,5 +69,13 @@ with Diagram("Data Lake", graph_attr=graph_attr, direction="LR"):
                 >> glue_crawler
                 >> glue_data_catalog
             )
-    athena >> buckets
+
+    (
+        analytics_api
+        >> cognito_analytics_pool
+        >> analytics_api
+        >> athena_lambda
+        >> athena
+        >> buckets
+    )
     duckdb_lambda >> buckets
