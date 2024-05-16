@@ -1,0 +1,35 @@
+openapi: "3.0.1"
+info:
+  title: "test"
+  version: "1.0"
+paths:
+  /athena:
+    post:
+      tags:
+        - Query
+      summary: Submit a query
+      operationId: Submit a query
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - database_name
+                - query
+              properties:
+                database_name:
+                  type: string
+                  example: my_database
+                query:
+                  type: string
+                  example: "SELECT * FROM my_database.my_table LIMIT 5;"
+      responses:
+        default:
+          description: "Default response for ANY /athena"
+      x-amazon-apigateway-integration:
+        payloadFormatVersion: "2.0"
+        type: "aws_proxy"
+        httpMethod: "POST"
+        uri: "${athena_lambda_arn}"
+        connectionType: "INTERNET"

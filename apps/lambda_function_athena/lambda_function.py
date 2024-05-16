@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import time
@@ -13,9 +14,12 @@ ATHENA_OUTPUT_PATH = os.getenv("ATHENA_OUTPUT_PATH")
 
 
 def lambda_handler(event, context):
+    params = event
+    if "body" in event:
+        params = json.loads(event["body"])
 
-    database_name = event["database_name"]
-    query = event["query"]
+    database_name = params["database_name"]
+    query = params["query"]
 
     athena_client = boto3.client("athena")
     query_execution = athena_client.start_query_execution(

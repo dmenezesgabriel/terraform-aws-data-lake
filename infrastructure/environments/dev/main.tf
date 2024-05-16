@@ -100,6 +100,45 @@ module "duckdb_lambda" {
   }
 }
 
+module "athena_lambda" {
+  source = "../../modules/lambda"
+
+  region                    = var.region
+  function_policy_json      = data.aws_iam_policy_document.lambda_athena_access.json
+  function_name             = "athena_lambda"
+  function_handler          = "lambda_function.lambda_handler"
+  function_source_file_path = "${local.apps_dir}/lambda_function_athena/lambda_function.py"
+  function_zip_file_path    = "${local.apps_dir}/lambda_function_athena/lambda_function.zip"
+  function_runtime          = "python3.11"
+  function_memory_size      = 128
+  function_timeout          = 15
+  lambda_function_environment_variables = {
+    ATHENA_REGION      = var.region
+    ATHENA_WORKGROUP   = aws_athena_workgroup.athena_users_workgroup.name
+    ATHENA_OUTPUT_PATH = "s3://${aws_s3_bucket.athena_query_results.bucket}"
+  }
+}
+
+resource "aws_lambda_permission" "athena_lambda_allow_apigateway" {
+  statement_id  = "AllowExecutionFromApiGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = module.athena_lambda.lambda_function.function_name
+  principal     = "apigateway.amazonaws.com"
+}
+
+module "api_gateway" {
+  source                    = "../../modules/api_gateway"
+  api_gateway_name          = "analytics_api"
+  api_gateway_stage         = "dev"
+  api_gateway_protocol_type = "HTTP"
+  api_gateway_body = templatefile("${local.apps_dir}/analytics_api/api.yaml",
+    {
+      athena_lambda_arn = "${module.athena_lambda.lambda_function.invoke_arn}"
+      aws_region        = var.region
+    }
+  )
+}
+
 # module "hello_glue_job" {
 #   source = "../../modules/glue_job"
 
@@ -146,23 +185,3 @@ module "duckdb_lambda" {
 #     REGION_NAME = var.region
 #   }
 # }
-
-
-module "athena_lambda" {
-  source = "../../modules/lambda"
-
-  region                    = var.region
-  function_policy_json      = data.aws_iam_policy_document.lambda_athena_access.json
-  function_name             = "athena_lambda"
-  function_handler          = "lambda_function.lambda_handler"
-  function_source_file_path = "${local.apps_dir}/lambda_function_athena/lambda_function.py"
-  function_zip_file_path    = "${local.apps_dir}/lambda_function_athena/lambda_function.zip"
-  function_runtime          = "python3.11"
-  function_memory_size      = 128
-  function_timeout          = 15
-  lambda_function_environment_variables = {
-    ATHENA_REGION      = var.region
-    ATHENA_WORKGROUP   = aws_athena_workgroup.athena_users_workgroup.name
-    ATHENA_OUTPUT_PATH = "s3://${aws_s3_bucket.athena_query_results.bucket}"
-  }
-}
