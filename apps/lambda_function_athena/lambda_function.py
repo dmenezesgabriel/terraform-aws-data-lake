@@ -44,7 +44,21 @@ def lambda_handler(event, context):
         response_query_result = athena_client.get_query_results(
             QueryExecutionId=execution_id
         )
-        result = response_query_result["ResultSet"]["Rows"]
+        columns = [
+            col["Label"]
+            for col in response_query_result["ResultSet"]["ResultSetMetadata"][
+                "ColumnInfo"
+            ]
+        ]
+        for res in response_query_result["ResultSet"]["Rows"][1:]:
+            values = []
+            for field in res["Data"]:
+                try:
+                    values.append(list(field.values())[0])
+                except Exception as error:
+                    logger.warning(error)
+                    values.append(list(" "))
+            result.append(dict(zip(columns, values)))
 
     return {"result": result, "state": state}
 
