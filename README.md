@@ -40,6 +40,56 @@ This is a sandbox AWS S3 Data Lake provisioning terraform repository. The script
   terraform output
   ```
 
+## Cognito
+
+- **Get client ids by user pool id**:
+
+```sh
+aws cognito-idp list-user-pool-clients --user-pool-id ${COGNITO_USER_POOL_ID}
+```
+
+- **Sign Up**:
+
+```sh
+aws cognito-idp sign-up \
+ --client-id ${COGNITO_USER_POOL_CLIENT_ID} \
+ --username ${USER_USERNAME} \
+ --password ${USER_PASSWORD} \
+ --user-attributes Name=name,Value=${USER_NAME} Name=email,Value=${USER_EMAIL}
+```
+
+- **Admin confirm user Sign Up**:
+
+```sh
+aws cognito-idp admin-confirm-sign-up \
+ --user-pool-id  ${COGNITO_USER_POOL_ID} \
+ --username ${USER_USERNAME}
+```
+
+- **Check if user is confirmed**:
+
+```sh
+aws cognito-idp admin-get-user \
+ --user-pool-id  ${COGNITO_USER_POOL_ID} \
+ --username ${USER_USERNAME}
+```
+
+- **Get Token**:
+
+```sh
+aws cognito-idp initiate-auth \
+ --client-id ${COGNITO_USER_POOL_CLIENT_ID} \
+ --auth-flow USER_PASSWORD_AUTH \
+ --auth-parameters USERNAME=${USER_USERNAME},PASSWORD=${USER_PASSWORD} \
+ --query 'AuthenticationResult.IdToken'
+```
+
+- **Get Token**:
+
+```sh
+curl -H "Authorization: ${TOKEN}" https://${MY_API_GATEWAY_ENDPOINT}
+```
+
 ## Important!
 
 Files must be uploaded in its own folder so Glue Crawler do the catalog correctly and avoid returning zero records at Athena queries.
@@ -70,3 +120,4 @@ Files must be uploaded in its own folder so Glue Crawler do the catalog correctl
 - [serverless-openapi-amazon-api-gateway](https://blog.serverlessadvocate.com/serverless-openapi-amazon-api-gateway-with-the-aws-cdk-part-1-8a90477ebc24)
 - [api-gateway-to-a-lambda-function-using-lambda-proxy-and-non-proxyintegration-with-openapi-specs](https://dev.to/aws-builders/api-gateway-to-a-lambda-function-using-lambda-proxy-and-non-proxyintegration-with-openapi-specs-5eak)
 - [create-an-internal-amazon-api-gateway-with-terraform](https://medium.com/@sophie.cosgrove/create-an-internal-amazon-api-gateway-with-terraform-6a7d319fc0fd)
+- [openapi-defined-aws-api-gateway-with-cognito-in-terraform](https://medium.com/@xpiotrkleban/openapi-defined-aws-api-gateway-with-cognito-in-terraform-38f28ce459b3)

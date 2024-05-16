@@ -2,6 +2,8 @@ openapi: "3.0.1"
 info:
   title: "test"
   version: "1.0"
+security:
+  - jwt-authorizer: []
 paths:
   /athena:
     post:
@@ -33,3 +35,14 @@ paths:
         httpMethod: "POST"
         uri: "${athena_lambda_arn}"
         connectionType: "INTERNET"
+components:
+  securitySchemes:
+    jwt-authorizer:
+      type: oauth2
+      x-amazon-apigateway-authorizer:
+        type: jwt
+        identitySource: "$request.header.Authorization"
+        jwtConfiguration:
+          audience:
+            - ${client_id}
+          issuer: https://cognito-idp.${region}.amazonaws.com/${user_pool_id}

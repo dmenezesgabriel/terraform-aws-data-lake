@@ -134,7 +134,9 @@ module "api_gateway" {
   api_gateway_body = templatefile("${local.apps_dir}/analytics_api/api.yaml",
     {
       athena_lambda_arn = "${module.athena_lambda.lambda_function.invoke_arn}"
-      aws_region        = var.region
+      region            = var.region
+      client_id         = aws_cognito_user_pool_client.main.id
+      user_pool_id      = aws_cognito_user_pool.main.id
     }
   )
 }
