@@ -121,3 +121,6 @@ Files must be uploaded in its own folder so Glue Crawler do the catalog correctl
 - [api-gateway-to-a-lambda-function-using-lambda-proxy-and-non-proxyintegration-with-openapi-specs](https://dev.to/aws-builders/api-gateway-to-a-lambda-function-using-lambda-proxy-and-non-proxyintegration-with-openapi-specs-5eak)
 - [create-an-internal-amazon-api-gateway-with-terraform](https://medium.com/@sophie.cosgrove/create-an-internal-amazon-api-gateway-with-terraform-6a7d319fc0fd)
 - [openapi-defined-aws-api-gateway-with-cognito-in-terraform](https://medium.com/@xpiotrkleban/openapi-defined-aws-api-gateway-with-cognito-in-terraform-38f28ce459b3)
+- [ecs-capacity-provider-strategy](https://opstree.com/blog/2023/12/05/ecs-capacity-provider-strategy/)
+- [aws-computing-with-ecs-ec2-terraform](https://nexgeneerz.io/aws-computing-with-ecs-ec2-terraform/)
+- [aws-ecs-cluster-on-ec2-with-terraform](https://medium.com/@vladkens/aws-ecs-cluster-on-ec2-with-terraform-2023-fdb9f6b7db07)
