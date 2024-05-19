@@ -42,10 +42,16 @@ This is a sandbox AWS S3 Data Lake provisioning terraform repository. The script
 
 ## Cognito
 
-- **Get client ids by user pool id**:
+- **Get User pool by user pool name**:
 
 ```sh
-aws cognito-idp list-user-pool-clients --user-pool-id ${COGNITO_USER_POOL_ID}
+COGNITO_USER_POOL_ID=$(aws cognito-idp list-user-pools --max-results 10 --query "UserPools[?Name=='$COGNITO_USER_POOL_NAME'].Id" --output text)
+```
+
+- **Get User pool client by name**:
+
+```sh
+COGNITO_USER_POOL_CLIENT_ID=$(aws cognito-idp list-user-pool-clients --user-pool-id "$COGNITO_USER_POOL_ID" --query "UserPoolClients[?ClientName=='$COGNITO_USER_POOL_CLIENT_NAME'].ClientId | [0]" --output text)
 ```
 
 - **Sign Up**:
@@ -124,3 +130,4 @@ Files must be uploaded in its own folder so Glue Crawler do the catalog correctl
 - [ecs-capacity-provider-strategy](https://opstree.com/blog/2023/12/05/ecs-capacity-provider-strategy/)
 - [aws-computing-with-ecs-ec2-terraform](https://nexgeneerz.io/aws-computing-with-ecs-ec2-terraform/)
 - [aws-ecs-cluster-on-ec2-with-terraform](https://medium.com/@vladkens/aws-ecs-cluster-on-ec2-with-terraform-2023-fdb9f6b7db07)
+- [cognito-hosted-ui-terraform](https://aws-terraform-by-example.com/guide/11-authentication.html#hosted-ui)

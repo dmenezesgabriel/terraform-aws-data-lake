@@ -2,14 +2,7 @@ terraform {
   required_version = "~> 1.0"
 
   # --- Backend must be provisioned first
-  backend "s3" {
-    bucket         = "tf-state-data-lake-717395713637"
-    key            = "state/terraform.tfstate"
-    region         = "us-east-1"
-    dynamodb_table = "tf-state-data-lake-717395713637"
-    encrypt        = false
-    # kms_key_id     = ""
-  }
+  backend "s3" {}
   # --- Backend must be provisioned first
 
   required_providers {

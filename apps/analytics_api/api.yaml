@@ -1,6 +1,6 @@
 openapi: "3.0.1"
 info:
-  title: "test"
+  title: "analytics_api"
   version: "1.0"
 security:
   - jwt-authorizer: []

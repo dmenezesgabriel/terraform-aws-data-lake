@@ -23,7 +23,7 @@ locals {
 data "aws_caller_identity" "current" {}
 
 module "backend" {
-  source                        = "../modules/backend"
+  source                        = "../../modules/backend"
   region                        = var.region
   bucket_name                   = local.prefix_project_account
   dynamodb_table_name           = local.prefix_project_account

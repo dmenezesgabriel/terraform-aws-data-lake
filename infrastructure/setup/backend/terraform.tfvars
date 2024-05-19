@@ -1,3 +1,3 @@
 region       = "us-east-1"
-project_name = "data-lake"
+project_name = "analytics-platform"
 environment  = "dev"

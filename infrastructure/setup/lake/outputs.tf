@@ -21,3 +21,8 @@ output "bucket_names" {
 output "crawler_trigger_lambda_names" {
   value = [for function in module.s3_object_created_trigger_crawler : function.lambda_function.function_name]
 }
+
+output "user_pool_client_id" {
+  value = data.external.user_pool_client_by_user_pool_id.result.ClientId
+}
+

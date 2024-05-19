@@ -139,3 +139,11 @@ data "aws_iam_policy_document" "lambda_athena_access" {
     ]
   }
 }
+
+data "aws_cognito_user_pools" "main" {
+  name = "analytics_user_pool"
+}
+
+data "external" "user_pool_client_by_user_pool_id" {
+  program = ["bash", "-c", "aws cognito-idp list-user-pool-clients --user-pool-id '${data.aws_cognito_user_pools.main.ids[0]}' --query 'UserPoolClients[?ClientName==`${var.cognito_user_pool_client_name}`] | [0]' --output json"]
+}

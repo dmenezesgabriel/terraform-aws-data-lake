@@ -135,8 +135,8 @@ module "api_gateway" {
     {
       athena_lambda_arn = "${module.athena_lambda.lambda_function.invoke_arn}"
       region            = var.region
-      client_id         = aws_cognito_user_pool_client.main.id
-      user_pool_id      = aws_cognito_user_pool.main.id
+      client_id         = data.external.user_pool_client_by_user_pool_id.result.ClientId
+      user_pool_id      = data.aws_cognito_user_pools.main.ids[0]
     }
   )
 }

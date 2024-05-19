@@ -30,20 +30,10 @@ variable "enable_s3_object_created_trigger_crawler" {
   type        = bool
 }
 
-variable "kaggle_username" {
-  description = "Kaggle username"
-  type        = string
-  default     = null
+variable "cognito_user_pool_client_name" {
+  type = string
 }
 
-variable "kaggle_key" {
-  description = "Kaggle key"
-  type        = string
-  default     = null
-}
-
-variable "kaggle_config_dir" {
-  description = "Kaggle config dir"
-  type        = string
-  default     = null
+variable "cognito_user_pool_name" {
+  type = string
 }
